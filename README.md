@@ -7,7 +7,7 @@ An elegant socket.io client for .NET, it supports socket.io server v2/v3/v4, and
 [![Target Framework](https://img.shields.io/badge/Target%20Framework-.NET%20Standard%202.0-%237014e8)](https://docs.microsoft.com/en-us/dotnet/standard/net-standard#net-implementation-support)
 [![NuGet](https://img.shields.io/nuget/dt/SocketIOClient)](https://www.nuget.org/packages/SocketIOClient)
 
-# Table of Contents
+## Table of Contents
 
 - [Quick start](#quick-start)
   - [Options](#options)
@@ -19,7 +19,7 @@ An elegant socket.io client for .NET, it supports socket.io server v2/v3/v4, and
   - [Windows 7 Support](#windows-7-support)
   - [Xamarin](#xamarin)
 - [Breaking changes](#breaking-changes)
-  - [Breaking changes in 3.1.0](#breaking-changes-in-310)
+  - [Breaking changes in 4.0.0](#breaking-changes-in-400)
 - [Change log](#change-log)
 - [Sponsors](#Sponsors)
 
@@ -47,7 +47,7 @@ client.On("test", response =>
     // You can print the returned data first to decide what to do next.
     // output: ["ok",{"id":1,"name":"tom"}]
     Console.WriteLine(response);
-    
+
     // Get the first data in the response
     string text = response.GetValue<string>();
     // Get the second data in the response
@@ -84,21 +84,21 @@ var client = new SocketIO("http://localhost:11000/", new SocketIOOptions
 });
 ```
 
-| Option | Default value | Description |
-| :- | :- | :- |
-| `Path` | `/socket.io` | name of the path that is captured on the server side |
-| `Reconnection` | `true` | whether to reconnect automatically |
-| `ReconnectionAttempts` | `int.MaxValue` | number of reconnection attempts before giving up |
-| `ReconnectionDelay` | `1000` | how long to initially wait before attempting a new reconnection. Affected by +/- `RandomizationFactor`, for example the default initial delay will be between 500 to 1500ms. |
-| `RandomizationFactor` | `0.5` | 0 <= RandomizationFactor <= 1 |
-| `ConnectionTimeout` | `20000` | connection timeout |
-| `Query` | `IEnumerable<KeyValuePair<string, string>>` | additional query parameters that are sent when connecting a namespace (then found in `socket.handshake.query` object on the server-side) |
-| `EIO` | `V4` | If your server is using socket.io server v2.x, please explicitly set it to V3 |
-| `ExtraHeaders` | `null` | Headers that will be passed for each request to the server (via xhr-polling and via websockets). These values then can be used during handshake or for special proxies. |
-| `Transport` | `Polling` | Websocket is used by default, you can change to http polling. |
-| `AutoUpgrade` | `true` | If websocket is available, it will be automatically upgrade to use websocket |
-| `Auth` | `null` | Credentials that are sent when accessing a namespace |
-| `RemoteCertificateValidationCallback` | `null` | Verifies the remote Secure Sockets Layer (SSL) certificate used for authentication. |
+| Option                                | Default value                               | Description                                                                                                                                                                  |
+| :------------------------------------ | :------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Path`                                | `/socket.io`                                | name of the path that is captured on the server side                                                                                                                         |
+| `Reconnection`                        | `true`                                      | whether to reconnect automatically                                                                                                                                           |
+| `ReconnectionAttempts`                | `int.MaxValue`                              | number of reconnection attempts before giving up                                                                                                                             |
+| `ReconnectionDelay`                   | `1000`                                      | how long to initially wait before attempting a new reconnection. Affected by +/- `RandomizationFactor`, for example the default initial delay will be between 500 to 1500ms. |
+| `RandomizationFactor`                 | `0.5`                                       | 0 <= RandomizationFactor <= 1                                                                                                                                                |
+| `ConnectionTimeout`                   | `20000`                                     | connection timeout                                                                                                                                                           |
+| `Query`                               | `IEnumerable<KeyValuePair<string, string>>` | additional query parameters that are sent when connecting a namespace (then found in `socket.handshake.query` object on the server-side)                                     |
+| `EIO`                                 | `V4`                                        | If your server is using socket.io server v2.x, please explicitly set it to V3                                                                                                |
+| `ExtraHeaders`                        | `null`                                      | Headers that will be passed for each request to the server (via xhr-polling and via websockets). These values then can be used during handshake or for special proxies.      |
+| `Transport`                           | `Polling`                                   | Websocket is used by default, you can change to http polling.                                                                                                                |
+| `AutoUpgrade`                         | `true`                                      | If websocket is available, it will be automatically upgrade to use websocket                                                                                                 |
+| `Auth`                                | `null`                                      | Credentials that are sent when accessing a namespace                                                                                                                         |
+| `RemoteCertificateValidationCallback` | `null`                                      | Verifies the remote Secure Sockets Layer (SSL) certificate used for authentication.                                                                                          |
 
 ## Ack
 
@@ -120,10 +120,10 @@ await client.EmitAsync("ack", response =>
 
 ```js
 socket.on("ack", (name, fn) => {
-    fn({
-        result: true,
-        message: `${name} - server`
-    });
+  fn({
+    result: true,
+    message: `${name} - server`,
+  });
 });
 ```
 
@@ -139,7 +139,7 @@ client.On("ack2", async response =>
     Console.WriteLine(response);
     int a = response.GetValue<int>();
     int b = response.GetValue<int>(1);
-    
+
     await response.CallbackAsync(b, a);
 });
 ```
@@ -148,7 +148,7 @@ client.On("ack2", async response =>
 
 ```js
 socket.emit("ack2", 1, 2, (arg1, arg2) => {
-    console.log(`arg1: ${arg1}, arg2: ${arg2}`);
+  console.log(`arg1: ${arg1}, arg2: ${arg2}`);
 });
 ```
 
@@ -197,19 +197,29 @@ client.On("new files", response =>
 });
 ```
 
-## Serializer
+## JsonSerializer
 
-The library uses System.Text.Json to serialize and deserialize json by default, If you want to change JsonSerializerOptions, you can do this:
+Based on the Target Framework you used to install the package, the default json serializer will be imported for you.
+
+| Target Framework     | Serializer       | Package                              | Example                                                                                                                                                                               |
+| -------------------- | ---------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| .NET Standard 2.0    | System.Text.Json | `SocketIO.Serializer.NewtonsoftJson` | `client.Serializer = new SystemTextJsonSerializer(new JsonSerializerOptions { PropertyNameCaseInsensitive = true });`                                                                 |
+| .NET Framework 4.6.2 | Newtonsoft.Json  | `SocketIO.Serializer.NewtonsoftJson` | `client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings { ContractResolver = new DefaultContractResolver { NamingStrategy = new CamelCaseNamingStrategy() } });` |
+| .NET Standard 2.0    | Message Pack     | `SocketIO.Serializer.MessagePack`    | `client.Serializer = new SocketIOMessagePackSerializer();`                                                                                                                            |
+
+This table assumes that you're using System.Text.Json for .NET Standard 2.0 and Newtonsoft.Json for .NET Framework 4.6.2, but you can use either serializer with either target framework if you prefer.
+
+If you want to change JsonSerializerOptions, you can do this:
 
 ```cs
-var client = new SocketIO("http://localhost:11000/");
-client.Serializer = new SystemTextJsonSerializer(new JsonSerializerOptions
+serializer = new SystemTextJsonSerializer(new JsonSerializerOptions
 {
     PropertyNameCaseInsensitive = true
 });
+var client = new SocketIO("http://localhost:11000/", serializer: serializer);
 ```
 
-Of course you can also use Newtonsoft.Json library, for this, you need to install `SocketIO.Serializer.NewtonsoftJson` 
+Of course you can also use Newtonsoft.Json library, for this, you need to install `SocketIO.Serializer.NewtonsoftJson`
 dependency.
 
 ```cs
@@ -279,25 +289,31 @@ For Xamarin.Android you should add the following code:
 
 I don't know the specific exceptions of Xamarin.iOS. Welcome to create a pr and update this document. thanks :)
 
+# Breaking Changes
+
+- The default serializer might change depending on the target framework your project is targeting by default.
+- Any of the serializers should work for either Target Framework (with the exception of Message Pack as it is .NET Standard 2.0+)
+- See [Json Serializer Options](#jsonserializer) for more details
+
 # Change log
 
-## [3.1.0] - 2023-08-25
+## [4.0.0] - 2024-20-02
 
-### Added
+### Changed
 
-- `SocketIO.Serializer.MessagePack` serializer
-- `SocketIO.Serializer.NewtonsoftJson` serializer
-- `SocketIO.Serializer.SystemTextJson` serializer
-
-### Removed
-
-- `SocketIOClient.Newtonsoft.Json` serializer
+- Changed all projects to target both .net standard 2.0 and .net 4.6.2
+  - Except `SocketIO.Serializer.MessagePack`
+- Changed `SocketIO` constructor to include `ISerializer`
+  - `ISerializer` defaults to first available based on target framework
+    - .net 4.6.2 `SocketIO.Serializer.NewtonsoftJson`
+    - .net Standard 2.0+ `SocketIO.Serializer.SystemTextJson`
+- Changed `EventHandlers` delegates to invoke `object` arrays instead of `JsonElement` arrays
 
 [See more](./CHANGELOG.md)
 
 # Thanks
 
-[<img src="https://socket.io/images/logo.svg" width=100px/>](https://github.com/socketio/socket.io) [<img src="https://github.com/darrachequesne.png" width=100px/>](https://github.com/socketio/socket.io) 
+[<img src="https://socket.io/images/logo.svg" width=100px/>](https://github.com/socketio/socket.io) [<img src="https://github.com/darrachequesne.png" width=100px/>](https://github.com/socketio/socket.io)
 
 Thank [socket.io](https://socket.io/) and [darrachequesne](https://github.com/darrachequesne) for sponsoring the project on [Open Collective](https://opencollective.com/socketio/expenses/).
 

@@ -1,5 +1,8 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SocketIO.Core;
+using SocketIO.Serializer.Tests.Models;
+using SocketIOClient.Transport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
