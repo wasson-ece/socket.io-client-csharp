@@ -9,19 +9,23 @@ An elegant socket.io client for .NET, it supports socket.io server v2/v3/v4, and
 
 ## Table of Contents
 
+- [Socket.IO-client for .NET](#socketio-client-for-net)
+  - [Table of Contents](#table-of-contents)
 - [Quick start](#quick-start)
   - [Options](#options)
   - [Ack](#ack)
+    - [The server executes the client's ack function](#the-server-executes-the-clients-ack-function)
+    - [The client executes the server's ack function](#the-client-executes-the-servers-ack-function)
   - [Binary messages](#binary-messages)
   - [JsonSerializer](#jsonserializer)
   - [Allowing Untrusted SSL Certificates](#allowing-untrusted-ssl-certificates)
-  - [ClientWebSocket Options](#clientwebsocket-options)
   - [Windows 7 Support](#windows-7-support)
   - [Xamarin](#xamarin)
-- [Breaking changes](#breaking-changes)
-  - [Breaking changes in 4.0.0](#breaking-changes-in-400)
+- [Breaking Changes](#breaking-changes)
 - [Change log](#change-log)
-- [Sponsors](#Sponsors)
+  - [\[4.0.0\] - 2024-20-02](#400---2024-20-02)
+    - [Changed](#changed)
+- [Thanks](#thanks)
 
 # Quick start
 
